@@ -1,10 +1,27 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
 .app {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* Ocupa el 100% de la altura de la ventana */
+  background-color: #f0f0f0; /* Fondo claro */
+  background-image: url('path/to/your/image.jpg'); /* Si prefieres usar una imagen como fondo */
+  background-size: cover; /* Para cubrir toda la pantalla */
+  background-position: center; /* Centra la imagen de fondo */
+  text-align: center; /* Centra el texto */
+  font-family: Arial, sans-serif; /* Puedes elegir la fuente que prefieras */
 }
 
 h1 {
-  color: #333;
+  margin-bottom: 20px; /* Espacio debajo del título */
+  color: #333; /* Color del texto */
+}
+
+.MachineInfo, .Board, .PlayerHand {
+  margin: 20px 0; /* Espacio entre los componentes */
 }

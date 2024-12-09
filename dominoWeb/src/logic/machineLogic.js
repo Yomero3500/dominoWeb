@@ -13,7 +13,8 @@ export const machineTurn = (board, hand, deck) => {
     }
   }
 
-  // Si no hay jugadas posibles, tomar una ficha del monte
+  console.log(hand);
+
   if (deck.length > 0) {
     const newDomino = deck[0];
     return {
@@ -22,8 +23,6 @@ export const machineTurn = (board, hand, deck) => {
       newDeck: deck.slice(1),
     };
   }
-
-  // No hay movimientos posibles y no hay fichas en el monte
   return {
     move: null,
     newHand: hand,
