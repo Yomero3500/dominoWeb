@@ -1,31 +1,38 @@
-export const machineTurn = (board, hand, deck) => {
-  const [left, right] = board.length > 0 ? board[0].split("|") : ["", ""];
-  const ends = [left, right];
+import { isMoveValid } from "./utils.js";
 
-  for (let domino of hand) {
+export const machineTurn = (currentBoard, machineHand, currentDeck) => {
+  let move = null;
+  let newHand = [...machineHand];
+  let newDeck = [...currentDeck];
+  
+  // Identificar los extremos del tablero
+  const [left, right] = currentBoard.length > 0
+    ? [currentBoard[0].split("|")[0], currentBoard[currentBoard.length - 1].split("|")[1]]
+    : ["", ""];
+  
+  // Buscar un movimiento válido en la mano de la máquina
+  for (const domino of machineHand) {
     const [dominoLeft, dominoRight] = domino.split("|");
-    if (board.length === 0 || ends.includes(dominoLeft) || ends.includes(dominoRight)) {
-      return {
-        move: domino,
-        newHand: hand.filter((d) => d !== domino),
-        newDeck: deck,
-      };
+    if (
+      (dominoLeft === left || dominoRight === left) ||
+      (dominoLeft === right || dominoRight === right)
+    ) {
+      move = domino;
+      break;
     }
   }
-
-  console.log(hand);
-
-  if (deck.length > 0) {
-    const newDomino = deck[0];
-    return {
-      move: null,
-      newHand: [...hand, newDomino],
-      newDeck: deck.slice(1),
-    };
+  
+  // Si no hay movimientos válidos, intentar robar del mazo
+  if (!move && newDeck.length > 0) {
+    const drawnDomino = newDeck.pop();
+    newHand.push(drawnDomino);
+    return { move: null, newHand, newDeck };
   }
-  return {
-    move: null,
-    newHand: hand,
-    newDeck: deck,
-  };
+  
+  // Si hay un movimiento válido, removerlo de la mano
+  if (move) {
+    newHand = newHand.filter((d) => d !== move);
+  }
+
+  return { move, newHand, newDeck };
 };

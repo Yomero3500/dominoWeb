@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import { shuffleDeck, drawInitialHand } from "./logic/deckUtils.js";
 import Board from "./components/Board.jsx";
 import PlayerHand from "./components/PlayerHand.jsx";
+import Swal from "sweetalert2"
 import MachineInfo from "./components/MachineInfo.jsx";
 import { machineTurn } from "./logic/machineLogic.js";
+import { isMoveValid } from "./logic/utils.js";
+
 
 const App = () => {
+  let tiros= 0;
   const [board, setBoard] = useState([]);
   const [deck, setDeck] = useState(() => shuffleDeck());
   const [playerHand, setPlayerHand] = useState([]);
   const [machineHand, setMachineHand] = useState([]);
   const [turn, setTurn] = useState("player");
 
-  // Inicializar el mazo y las manos al cargar el componente
   React.useEffect(() => {
     const { hand: playerHand, newDeck: deckAfterPlayer } = drawInitialHand(deck, 7);
     const { hand: machineHand, newDeck: finalDeck } = drawInitialHand(deckAfterPlayer, 7);
@@ -22,7 +25,7 @@ const App = () => {
 
     console.log("Mano de player:", playerHand);
     console.log("Mano de máquina:", machineHand);
-  }, []); // Este efecto se ejecuta solo una vez
+  }, []); 
 
   const handleMove = (domino, isPlayer) => {
     const [left, right] = board.length > 0
@@ -44,7 +47,20 @@ const App = () => {
     } else if (right === dominoRight) {
       newBoard.push(`${dominoRight}|${dominoLeft}`);
     } else {
-      console.log("Movimiento inválido:", domino);
+      tiros ++;
+      console.log("Movimiento inválido:", domino, tiros);
+      if (tiros >= 3) {
+        Swal.fire({
+          title: 'Fin del juego',
+          text: `El juego ha terminado. La mano de la máquina es: ${machineHand.join(", ")}`,
+          confirmButtonText: 'Reiniciar'
+        })
+        .then((res) => {
+          if (res.isConfirmed) {
+            location.reload();
+          }
+        })
+      }
       return;
     }
   
@@ -60,14 +76,13 @@ const App = () => {
   
     if (isPlayer) {
       setTurn("machine");
-      setTimeout(machineMove, 1000, newBoard); // Pasa el nuevo tablero a la máquina
+      setTimeout(machineMove, 1000, newBoard);
     } else {
       setTurn("player");
     }
   };
   
   const machineMove = (currentBoard) => {
-    console.log("Turno de la máquina:");
     const { move, newHand, newDeck } = machineTurn(currentBoard, machineHand, deck);
   
     if (move) {
@@ -78,11 +93,10 @@ const App = () => {
       setTurn("player");
     }
   
-    setMachineHand(newHand);
-    setDeck(newDeck);
+    setMachineHand(newHand); 
+    setDeck(newDeck);        
   };
   
-
   const checkGameOver = (newBoard) => {
     if (playerHand.length === 0) {
       alert("¡Ganaste!");
@@ -101,20 +115,8 @@ const App = () => {
     return false;
   };
 
-  const isMoveValid = (newBoard, domino) => {
-    const [left, right] = newBoard.length > 0
-      ? [newBoard[0].split("|")[0], newBoard[newBoard.length - 1].split("|")[1]]
-      : ["", ""];
 
-    const [dominoLeft, dominoRight] = domino.split("|");
-    return (
-      newBoard.length === 0 ||
-      left === dominoRight ||
-      left === dominoLeft ||
-      right === dominoLeft ||
-      right === dominoRight
-    );
-  };
+  
 
   return (
     <div className="app">
