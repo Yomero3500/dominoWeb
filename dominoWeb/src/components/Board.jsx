@@ -4,7 +4,6 @@ const Board = ({ board }) => {
   const renderDomino = (domino, index, isLeft) => {
     const [left, right] = domino.split("|");
 
-    // Determinar orientación según la conexión
     const orientation = isLeft ? "vertical" : "horizontal";
     const rotation = isLeft ? "rotate(-90deg)" : "rotate(0deg)";
 
@@ -18,8 +17,8 @@ const Board = ({ board }) => {
           margin: "5px",
           textAlign: "center",
           border: "1px solid black",
-          width: "50px",
-          height: "25px",
+          width: "20px",
+          height: "50px",
         }}
       >
         <div>{left}</div>

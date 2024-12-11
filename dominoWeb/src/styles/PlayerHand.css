@@ -11,10 +11,7 @@
 }
 
 .domino.valid {
-  background-color: #aaffaa; /* Verde para fichas válidas */
-}
-
-.domino.invalid {
-  background-color: #ffaaaa; /* Rojo para fichas inválidas */
-  cursor: not-allowed;
+  background-color: #aaffaa;
+  cursor: pointer;
+  font-size: xx-large;
 }

@@ -4,6 +4,7 @@ import Board from "./components/Board.jsx";
 import PlayerHand from "./components/PlayerHand.jsx";
 import Swal from "sweetalert2"
 import MachineInfo from "./components/MachineInfo.jsx";
+import "./styles/App.css";
 import { machineTurn } from "./logic/machineLogic.js";
 import { isMoveValid } from "./logic/utils.js";
 
@@ -28,6 +29,7 @@ const App = () => {
   }, []); 
 
   const handleMove = (domino, isPlayer) => {
+    
     const [left, right] = board.length > 0
       ? [board[0].split("|")[0], board[board.length - 1].split("|")[1]]
       : ["", ""];
@@ -49,17 +51,48 @@ const App = () => {
     } else {
       tiros ++;
       console.log("Movimiento inválido:", domino, tiros);
-      if (tiros >= 3) {
+      if (!isPlayer) {
         Swal.fire({
-          title: 'Fin del juego',
-          text: `El juego ha terminado. La mano de la máquina es: ${machineHand.join(", ")}`,
-          confirmButtonText: 'Reiniciar'
+          title: 'Movimiento inválido',
+          text: 'La maquina no puede tirar, pasando turno...',
         })
-        .then((res) => {
-          if (res.isConfirmed) {
-            location.reload();
-          }
-        })
+      }
+      if (tiros >= 5) {
+        if (playerHand.length<machineHand.length) {
+          Swal.fire({
+            title: 'Fin del juego',
+            text: `El juego ha terminado. El jugador ha ganado`,
+            confirmButtonText: 'Reiniciar'
+          })
+          .then((res) => {
+            if (res.isConfirmed) {
+              location.reload();
+            }
+          })
+        } else  if(machineHand.length<playerHand.length){
+          Swal.fire({
+            title: 'Fin del juego',
+            text: `El juego ha terminado. La maquina ha ganado`,
+            confirmButtonText: 'Reiniciar'
+          })
+          .then((res) => {
+            if (res.isConfirmed) {
+              location.reload();
+            }
+          })
+        }
+        else {
+          Swal.fire({
+            title: 'Fin del juego, TABLAS',
+            text: `El juego ha terminado. No se han podido realizar mas movimientos`,
+            confirmButtonText: 'Reiniciar'
+          })
+          .then((res) => {
+            if (res.isConfirmed) {
+              location.reload();
+            }
+          })
+        }
       }
       return;
     }
@@ -90,6 +123,10 @@ const App = () => {
       handleMove(move, false);
     } else {
       console.log("La máquina no puede mover. Pasando turno...");
+      Swal.fire({
+        title: 'Movimiento inválido',
+        text: 'La maquina no puede tirar, pasando turno...',
+      })
       setTurn("player");
     }
   
